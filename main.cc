@@ -232,10 +232,53 @@ void MiddleOrderBiTree2(BiTNode *T)
 }
 
 // 后序遍历（堆栈）
-/*void PostOrderBiTree(BiTNode* T){
+void PostOrderBiTree2(BiTNode *T)
+{
 
+    if (T == nullptr)
+    { // 空树则直接结束
 
-}*/
+        return;
+    }
+
+    stack<BiTNode *> nodeStack; // 创建一个栈保存节点
+
+    BiTNode *currentNode = T; // 维护一个当前节点指针
+
+    BiTNode *visitedNode = T; // 保存上次访问的节点，初始化为root是利用二叉树是无环图
+
+    while (currentNode || !nodeStack.empty())
+    {
+
+        // 当前节点非空，沿着左子树方向入栈
+        while (currentNode)
+        {
+
+            nodeStack.push(currentNode);
+
+            currentNode = currentNode->lChild;
+        }
+        currentNode = nodeStack.top(); // 取栈顶元素
+
+        // 如果栈顶元素有右子树，且未被访问
+        if (currentNode->rChild && currentNode->rChild != visitedNode)
+        {
+
+            currentNode = currentNode->rChild;
+        }
+        else
+        {
+
+            printf("%d ", currentNode->data); // 访问节点数据
+
+            visitedNode = currentNode; // 记录当前访问的节点
+
+            currentNode = nullptr; // 当前节点置为NULL，防止重复访问左子树
+
+            nodeStack.pop(); // 出栈
+        }
+    }
+}
 
 // 计算树的深度
 /*int TreeDeep(BiTNode* T) {
@@ -291,7 +334,7 @@ int main()
 
     levelOrder(T);
 
-    cout << "\n\n=== 树的属性 ===" << endl;
+    // cout << "\n\n=== 树的属性 ===" << endl;
 
     // cout << "树的深度：" << TreeDeep(T) << endl;
 
