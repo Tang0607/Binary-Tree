@@ -83,6 +83,41 @@ void CreateFullBiTree(BiTNode *&T, int depth)
     CreateFullBiTree(T->rChild, depth - 1);
 }
 
+// 创建有序二叉树
+void CreatSequentialBiTree(BiTNode *&T)
+{
+
+    int i, d;
+
+    cout << "请输入节点的数据:" << endl;
+
+    cin >> i;
+
+    cout << "请继续输入插入的数据（输入-1则结束创建）：" << endl;
+
+    cin >> d;
+
+    if (d = -1)
+    {
+
+        T = nullptr;
+
+        return;
+    }
+
+    if (d > i)
+    {
+
+        // CreatSequentialBiTree(T->rChild);
+    }
+
+    if (d < i)
+    {
+
+        // CreatSequentialBiTree(T->lChild);
+    }
+}
+
 // 先序遍历（递归）
 void PreOrderBiTree(BiTNode *T)
 {
@@ -306,29 +341,57 @@ int main()
 
     cout << "注：拥有255个节点的满二叉树深度h=8（2^8-1=255)" << endl;
 
-    int i;
+    int i, a;
 
     cin >> i;
 
     CreateFullBiTree(T, i);
 
+    cout << "您可以选择用递归或堆栈的方法进行遍历(包括前序、中序、后序的遍历）" << endl;
+
+    cout << "输入1使用递归方法进行遍历，输入2使用堆栈方法进行遍历" << endl;
+
+    cin >> a;
+
     /*cout << "=== 开始创建二叉树 ===" << endl;
 
     CreateBiTree(T);*/
 
-    cout << "\n=== 遍历结果 ===" << endl;
+    if (a = 1)
+    {
 
-    cout << "先序遍历：";
+        cout << "\n=== 遍历结果 ===" << endl;
 
-    PreOrderBiTree(T);
+        cout << "先序遍历：";
 
-    cout << "\n中序遍历：";
+        PreOrderBiTree(T);
 
-    MiddleOrderBiTree(T);
+        cout << "\n中序遍历：";
 
-    cout << "\n后序遍历：";
+        MiddleOrderBiTree(T);
 
-    PostOrderBiTree(T);
+        cout << "\n后序遍历：";
+
+        PostOrderBiTree(T);
+    }
+
+    if (a = 2)
+    {
+
+        cout << "\n=== 遍历结果 ===" << endl;
+
+        cout << "先序遍历：";
+
+        PreOrderBiTree2(T);
+
+        cout << "\n中序遍历：";
+
+        MiddleOrderBiTree2(T);
+
+        cout << "\n后序遍历：";
+
+        PostOrderBiTree2(T);
+    }
 
     cout << "\n层序遍历：";
 
