@@ -25,7 +25,7 @@ public:
     }
 
     ~BiTNode()
-    { // 析构函数释放子节点(不是动态分配内存为什么需要delete）
+    { // 析构函数释放子节点
 
         delete lChild;
 
@@ -34,33 +34,35 @@ public:
 };
 
 // 先序创建二叉树
-/*void CreateBiTree(BiTNode*& T) {
+void CreateBiTree(BiTNode *&T)
+{
 
     int ch;
 
-    cout << "输入节点值（-1表示空节点）：";
+    cout << "输入节点数据（-1表示空节点）：";
 
     cin >> ch;
 
-    if (ch == -1) {
+    if (ch == -1)
+    {
 
         T = nullptr;
 
         return;
-    }                   //结果为空则直接返回
+    } // 结果为空则直接返回
 
     T = new BiTNode(ch);
 
-    cout << "创建 " << T->data << " 的左子节点：" << endl;    //创建左子节点
+    cout << "创建 " << T->data << " 的左子节点：" << endl; // 创建左子节点
 
     CreateBiTree(T->lChild);
 
-    cout << "创建 " << T->data << " 的右子节点：" << endl;    //创建右子节点
+    cout << "创建 " << T->data << " 的右子节点：" << endl; // 创建右子节点
 
     CreateBiTree(T->rChild);
-}*/
+}
 
-// 创建有255个节点的二叉树
+// 创建深度为h的二叉树
 void CreateFullBiTree(BiTNode *&T, int depth)
 {
 
@@ -84,38 +86,29 @@ void CreateFullBiTree(BiTNode *&T, int depth)
 }
 
 // 创建有序二叉树
-void CreatSequentialBiTree(BiTNode *&T)
+BiTNode *insert(BiTNode *T, int val)
 {
-
-    int i, d;
-
-    cout << "请输入节点的数据:" << endl;
-
-    cin >> i;
-
-    cout << "请继续输入插入的数据（输入-1则结束创建）：" << endl;
-
-    cin >> d;
-
-    if (d = -1)
+    if (T == nullptr)
     {
+        BiTNode *newNode = new BiTNode(val);
 
-        T = nullptr;
+        newNode->data = val;
 
-        return;
+        newNode->lChild = nullptr;
+
+        newNode->rChild = nullptr;
+
+        return newNode;
     }
-
-    if (d > i)
+    if (val < T->data)
     {
-
-        // CreatSequentialBiTree(T->rChild);
+        T->lChild = insert(T->lChild, val);
     }
-
-    if (d < i)
+    else if (val > T->data)
     {
-
-        // CreatSequentialBiTree(T->lChild);
+        T->rChild = insert(T->rChild, val);
     }
+    return T;
 }
 
 // 先序遍历（递归）
@@ -193,10 +186,14 @@ void levelOrder(BiTNode *T)
         cout << T->data << " ";
 
         if (T->lChild)
+        {
             q.push(T->lChild);
+        }
 
         if (T->rChild)
+        {
             q.push(T->rChild);
+        }
     }
 }
 
@@ -222,18 +219,18 @@ void PreOrderBiTree2(BiTNode *T)
         nodeStack.pop(); // 顶节点出栈
 
         cout << T->data << " ";
-    }
 
-    if (T->rChild != nullptr)
-    { // 由于栈是先进后出，因此先使右节点入栈
+        if (T->rChild != nullptr)
+        { // 由于栈是先进后出，因此先使右节点入栈
 
-        nodeStack.push(T->rChild);
-    }
+            nodeStack.push(T->rChild);
+        }
 
-    if (T->lChild != nullptr)
-    {
+        if (T->lChild != nullptr)
+        {
 
-        nodeStack.push(T->lChild);
+            nodeStack.push(T->lChild);
+        }
     }
 }
 
@@ -280,7 +277,7 @@ void PostOrderBiTree2(BiTNode *T)
 
     BiTNode *currentNode = T; // 维护一个当前节点指针
 
-    BiTNode *visitedNode = T; // 保存上次访问的节点，初始化为root是利用二叉树是无环图
+    BiTNode *visitedNode = T;
 
     while (currentNode || !nodeStack.empty())
     {
@@ -308,44 +305,91 @@ void PostOrderBiTree2(BiTNode *T)
 
             visitedNode = currentNode; // 记录当前访问的节点
 
-            currentNode = nullptr; // 当前节点置为NULL，防止重复访问左子树
+            currentNode = nullptr; // 防止重复访问左子树
 
             nodeStack.pop(); // 出栈
         }
     }
 }
 
-// 计算树的深度
-/*int TreeDeep(BiTNode* T) {
-    if (T == nullptr){
+// ========== 打印函数 ==========
+void PrintTreeRotatedLeft(BiTNode *node, int space = 0, bool isLeft = false)
+{
+    const int SPACING = 4; // 控制节点间距
 
-        return 0;
-
+    if (node == nullptr)
+    {
+        return;
     }
 
-    int leftDeep = TreeDeep(T->lChild);
+    // 先打印右子树（在打印区域的右侧）
+    PrintTreeRotatedLeft(node->rChild, space + SPACING, false);
 
-    int rightDeep = TreeDeep(T->rChild);
+    // 打印当前节点前的连接线
+    if (space > 0)
+    {
+        cout << string(space, ' ');
 
-    return (leftDeep > rightDeep ? leftDeep : rightDeep) + 1;
-}*/
+        if (isLeft)
+        {
+            cout << "└──"; // 左子节点连接线
+        }
+        else
+        {
+            cout << "┌──"; // 右子节点连接线
+        }
+    }
+
+    // 打印当前节点
+    cout << node->data << "\n";
+
+    // 打印左子树（在打印区域的左侧）
+    PrintTreeRotatedLeft(node->lChild, space + SPACING, true);
+}
 
 int main()
 {
 
     BiTNode *T = nullptr;
 
+    int i, a, b = 0;
+
+    int c = 0;
+
     cout << "=== 开始生成二叉树 ===" << endl;
 
-    cout << "接下来创建深度为h的满二叉树,请输入h的具体数值：" << endl;
+    cout << "接下来您可以选择生成自定义二叉树或生成自定义数据的有序二叉树或深度为h的满二叉树（拥有255个节点的满二叉树深度h=8（2^8-1=255)）" << endl;
 
-    cout << "注：拥有255个节点的满二叉树深度h=8（2^8-1=255)" << endl;
+    cout << "输入1生成自定义数据的有序二叉树，输入2生成自定义二叉树，输入3生成深度为h的满二叉树" << endl;
 
-    int i, a;
+    cin >> b;
 
-    cin >> i;
+    if (b == 2)
+    {
+        CreateBiTree(T);
+    }
+    else if (b == 1)
+    {
+        while (c != -1)
+        {
+            cout << "请输入节点数据(-1表示结束插入)：" << endl;
 
-    CreateFullBiTree(T, i);
+            cin >> c;
+
+            if (c != -1)
+            {
+                T = insert(T, c);
+            }
+        }
+    }
+    else if (b == 3)
+    {
+        cout << "请输入h的具体数值：" << endl;
+        cin >> i;
+        CreateFullBiTree(T, i);
+    }
+
+    cout << "=== 接下来实现二叉树的遍历 ===" << endl;
 
     cout << "您可以选择用递归或堆栈的方法进行遍历(包括前序、中序、后序的遍历）" << endl;
 
@@ -353,11 +397,7 @@ int main()
 
     cin >> a;
 
-    /*cout << "=== 开始创建二叉树 ===" << endl;
-
-    CreateBiTree(T);*/
-
-    if (a = 1)
+    if (a == 1)
     {
 
         cout << "\n=== 遍历结果 ===" << endl;
@@ -375,7 +415,7 @@ int main()
         PostOrderBiTree(T);
     }
 
-    if (a = 2)
+    else if (a == 2)
     {
 
         cout << "\n=== 遍历结果 ===" << endl;
@@ -397,9 +437,11 @@ int main()
 
     levelOrder(T);
 
-    // cout << "\n\n=== 树的属性 ===" << endl;
+    cout << endl;
 
-    // cout << "树的深度：" << TreeDeep(T) << endl;
+    cout << "\n\n===打印二叉树=== " << endl;
+
+    PrintTreeRotatedLeft(T);
 
     delete T; // 动态分配后释放内存
 
