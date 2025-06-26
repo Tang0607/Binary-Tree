@@ -88,7 +88,7 @@ void CreateFullBiTree(BiTNode *&T, int depth)
 // 创建有序二叉树
 BiTNode *insert(BiTNode *T, int val)
 {
-    if (T == nullptr)
+    if (T == nullptr) // 若节点为空，那么将数据传至此节点并创建此节点下的左右子节点
     {
         BiTNode *newNode = new BiTNode(val);
 
@@ -100,7 +100,7 @@ BiTNode *insert(BiTNode *T, int val)
 
         return newNode;
     }
-    if (val < T->data)
+    if (val < T->data) // 若节点不为空，那么比较节点数据得出去往左右子树
     {
         T->lChild = insert(T->lChild, val);
     }
@@ -347,6 +347,42 @@ void PrintTreeRotatedLeft(BiTNode *node, int space = 0, bool isLeft = false)
     PrintTreeRotatedLeft(node->lChild, space + SPACING, true);
 }
 
+// 普通二叉树的查找（使用深度优先搜索）
+BiTNode *searchBinaryTree(BiTNode *T, int target)
+{
+    if (T == nullptr || T->data == target) ////与本节点的数据比较
+    {
+        return T;
+    }
+
+    // 先在左子树中查找
+    BiTNode *lChild = searchBinaryTree(T->lChild, target);
+
+    if (lChild != nullptr)
+    {
+        return lChild;
+    }
+    // 再在右子树中查找
+    return searchBinaryTree(T->rChild, target);
+}
+
+BiTNode *searchSeBinaryTree(BiTNode *T, int target)
+// 二叉搜索树（有序二叉树）的查找
+{
+    if (T == nullptr || T->data == target) // 与本节点的数据比较
+    {
+        return T;
+    }
+    if (target < T->data) // 若小于则向左传递
+    {
+        return searchSeBinaryTree(T->lChild, target);
+    }
+    else
+    {
+        return searchSeBinaryTree(T->rChild, target); // 大于向右传递
+    }
+}
+
 int main()
 {
 
@@ -355,6 +391,8 @@ int main()
     int i, a, b = 0;
 
     int c = 0;
+
+    int target;
 
     cout << "=== 开始生成二叉树 ===" << endl;
 
@@ -385,7 +423,9 @@ int main()
     else if (b == 3)
     {
         cout << "请输入h的具体数值：" << endl;
+
         cin >> i;
+
         CreateFullBiTree(T, i);
     }
 
@@ -442,6 +482,39 @@ int main()
     cout << "\n\n===打印二叉树=== " << endl;
 
     PrintTreeRotatedLeft(T);
+
+    cout << "\n\n===查找二叉树=== " << endl;
+
+    cout << "请输入要查找的数据：" << endl;
+
+    cin >> target;
+
+    if (b == 1)
+    {
+        BiTNode *result = searchSeBinaryTree(T, target);
+
+        if (result)
+        {
+            cout << "在二叉树中找到了节点: " << result->data << endl;
+        }
+        else
+        {
+            cout << "在二叉树中未找到目标节点" << endl;
+        }
+    }
+    else
+    {
+        BiTNode *result = searchBinaryTree(T, target);
+
+        if (result)
+        {
+            cout << "在二叉树中找到了节点: " << result->data << endl;
+        }
+        else
+        {
+            cout << "在二叉树中未找到目标节点" << endl;
+        }
+    }
 
     delete T; // 动态分配后释放内存
 
