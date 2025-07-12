@@ -33,6 +33,223 @@ public:
     }
 };
 
+
+//红黑树的创建
+class RBTree
+{
+public:
+    int data;
+
+    int color;//1代表黑，2代表红
+
+    RBTree *lChild;
+
+    RBTree *rChild;
+
+    RBTree *father;
+
+    RBTree(int val)
+    { // 构造函数
+
+        data = val;
+
+        lChild = nullptr;
+
+        rChild = nullptr;
+
+        father = nullptr;
+    }
+
+    ~RBTree()
+    {
+
+        delete lChild;
+
+        delete rChild;
+
+    }
+};
+
+// 全局变量，表示红黑树的根节点
+RBTree* root = nullptr;
+
+const int BLACK = 1;
+
+const int RED = 2;
+
+// 左旋
+void leftRotate(RBTree* x){
+
+    RBTree* y = x->rChild;
+
+    x->rChild = y->lChild;
+
+    if (y->lChild != nullptr){
+
+        y->lChild->father = x;
+    }
+    y->father = x->father;
+
+    if (x->father == nullptr){
+
+        root = y;
+
+    } else if (x == x->father->lChild){
+
+        x->father->lChild = y;
+
+    } else {
+
+        x->father->rChild = y;
+
+    }
+    y->lChild = x;
+
+    x->father = y;
+}
+
+// 右旋
+void rightRotate(RBTree* y){
+
+    RBTree* x = y->lChild;
+
+    y->lChild = x->rChild;
+
+    if (x->rChild != nullptr){
+
+        x->rChild->father = y;
+    }
+    x->father = y->father;
+
+    if (y->father == nullptr){
+
+        root = x;
+
+    } else if (y == y->father->rChild){
+
+        y->father->rChild = x;
+
+    } else {
+
+        y->father->lChild = x;
+    }
+    x->rChild = y;
+
+    y->father = x;
+}
+
+void insertFixup(RBTree* z) {
+    while (z->father != nullptr && z->father->color == RED) {
+
+        if (z->father == z->father->father->lChild) {
+
+            RBTree* y = z->father->father->rChild;
+
+            if (y != nullptr && y->color == RED) {
+
+                z->father->color = BLACK;
+
+                y->color = BLACK;
+
+                z->father->father->color = RED;
+
+                z = z->father->father;
+
+            } else {
+
+                if (z == z->father->rChild) {
+
+                    z = z->father;
+
+                    leftRotate(z);
+
+                }
+
+                z->father->color = BLACK;
+
+                z->father->father->color = RED;
+
+                rightRotate(z->father->father);
+            }
+        } else {
+
+            RBTree* y = z->father->father->lChild;
+
+            if (y != nullptr && y->color == RED) {
+
+                z->father->color = BLACK;
+
+                y->color = BLACK;
+
+                z->father->father->color = RED;
+
+                z = z->father->father;
+
+            } else {
+
+                if (z == z->father->lChild) {
+
+                    z = z->father;
+
+                    rightRotate(z);
+
+                }
+                z->father->color = BLACK;
+
+                z->father->father->color = RED;
+
+                leftRotate(z->father->father);
+            }
+        }
+    }
+    root->color = BLACK;
+}
+
+RBTree* insert(int val) {
+
+    RBTree* z = new RBTree(val);
+
+    z->color = RED;
+
+    RBTree* y = nullptr;
+
+    RBTree* x = root;
+
+    while (x != nullptr) {
+
+        y = x;
+
+        if (z->data < x->data) {
+
+            x = x->lChild;
+
+        } else {
+
+            x = x->rChild;
+        }
+    }
+
+    z->father = y;
+
+    if (y == nullptr) {
+
+        root = z;
+
+    } else if (z->data < y->data) {
+
+        y->lChild = z;
+
+    } else {
+
+        y->rChild = z;
+    }
+
+    insertFixup(z);
+
+    return z;
+}
+
+
 // 先序创建二叉树
 void CreateBiTree(BiTNode *&T)
 {
@@ -386,7 +603,7 @@ BiTNode *searchSeBinaryTree(BiTNode *T, int target)
 int main()
 {
 
-    BiTNode *T = nullptr;
+    /*BiTNode *T = nullptr;
 
     int i, a, b = 0;
 
@@ -516,7 +733,22 @@ int main()
         }
     }
 
-    delete T; // 动态分配后释放内存
+    delete T;*/ // 动态分配后释放内存
+
+    int i;
+
+    cout<<"接下来创建红黑树"<<endl;
+
+    cout<<"请输入节点的数据，程序将自动插入到合适的位置并调整红黑树结构"<<endl;
+
+    while(i!=-1)
+    {
+        cin>>i;
+
+        insert(i);
+    }
+
+    //输出遍历红黑树
 
     return 0;
 }
