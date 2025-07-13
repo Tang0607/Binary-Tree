@@ -138,7 +138,7 @@ void rightRotate(RBTree* y){
     y->father = x;
 }
 
-void insertFixup(RBTree* z) {
+void Fixup(RBTree* z) {
     while (z->father != nullptr && z->father->color == RED) {
 
         if (z->father == z->father->father->lChild) {
@@ -244,10 +244,30 @@ RBTree* insert(int val) {
         y->rChild = z;
     }
 
-    insertFixup(z);
+    Fixup(z);
 
     return z;
 }
+
+//中序遍历
+void inorderTraversal(RBTree* node) {
+
+    if (node != nullptr) {
+
+        inorderTraversal(node->lChild);
+
+        cout << "Data: " << node->data << ", Color: " << (node->color == BLACK ? "Black" : "Red") << endl;
+
+        inorderTraversal(node->rChild);
+    }
+}
+
+//打印
+void printRBTree() {
+
+    inorderTraversal(root);
+}
+
 
 
 // 先序创建二叉树
@@ -739,16 +759,24 @@ int main()
 
     cout<<"接下来创建红黑树"<<endl;
 
-    cout<<"请输入节点的数据，程序将自动插入到合适的位置并调整红黑树结构"<<endl;
+    cout<<"请输入节点的数据，程序将自动插入到合适的位置并调整红黑树结构（输入-1时将结束创建）"<<endl;
 
-    while(i!=-1)
-    {
-        cin>>i;
+    while (i != -1)
+        {
+            cout << "请输入节点数据(-1表示结束插入)：" << endl;
 
-        insert(i);
-    }
+            cin >> i;
+
+            if (i != -1)
+            {
+                insert(i);
+            }
+        }
 
     //输出遍历红黑树
+    cout<<"接下来中序遍历红黑树"<<endl;
+
+    printRBTree();
 
     return 0;
 }
